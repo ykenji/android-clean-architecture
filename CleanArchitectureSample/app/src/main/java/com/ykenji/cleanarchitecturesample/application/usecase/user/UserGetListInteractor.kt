@@ -1,6 +1,7 @@
 package com.ykenji.cleanarchitecturesample.application.usecase.user
 
 import android.content.Context
+import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.common.UserData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListInputData
@@ -24,18 +25,20 @@ class UserGetListInteractor @Inject constructor(
     @InstallIn(SingletonComponent::class)
     @EntryPoint
     interface UserGetListInteractorEntryPoint {
-        fun getUserRepository(): UserRepository
-        fun getUserGetListPresenter(): UserGetListPresenter
+        fun getServiceProvider(): ServiceProvider
+    }
+
+    private val serviceProvider by lazy {
+        EntryPointAccessors.fromApplication(context, UserGetListInteractorEntryPoint::class.java)
+            .getServiceProvider()
     }
 
     private val userRepository by lazy {
-        EntryPointAccessors.fromApplication(context, UserGetListInteractorEntryPoint::class.java)
-            .getUserRepository()
+        serviceProvider.getService(UserRepository::class.java)
     }
 
     private val userGetListPresenter by lazy {
-        EntryPointAccessors.fromApplication(context, UserGetListInteractorEntryPoint::class.java)
-            .getUserGetListPresenter()
+        serviceProvider.getService(UserGetListPresenter::class.java)
     }
 
     override fun handle(inputData: UserGetListInputData): UserGetListOutputData {

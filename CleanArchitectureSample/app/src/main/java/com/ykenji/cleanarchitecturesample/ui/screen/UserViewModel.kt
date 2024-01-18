@@ -3,6 +3,7 @@ package com.ykenji.cleanarchitecturesample.ui.screen
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.domain.adapter.log.Log
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.common.UserData
@@ -32,23 +33,24 @@ class UserViewModel @Inject constructor(
     @InstallIn(SingletonComponent::class)
     @EntryPoint
     interface UserViewModelEntryPoint {
-        fun getLog(): Log
-        fun getUserAddPresenter(): UserAddPresenter
-        fun getUserGetListPresenter(): UserGetListPresenter
+        fun getServiceProvider(): ServiceProvider
+    }
+
+    private val serviceProvider by lazy {
+        EntryPointAccessors.fromApplication(context, UserViewModelEntryPoint::class.java)
+            .getServiceProvider()
     }
 
     private val log by lazy {
-        EntryPointAccessors.fromApplication(context, UserViewModelEntryPoint::class.java).getLog()
+        serviceProvider.getService(Log::class.java)
     }
 
     private val userAddPresenter by lazy {
-        EntryPointAccessors.fromApplication(context, UserViewModelEntryPoint::class.java)
-            .getUserAddPresenter()
+        serviceProvider.getService(UserAddPresenter::class.java)
     }
 
     private val userGetListPresenter by lazy {
-        EntryPointAccessors.fromApplication(context, UserViewModelEntryPoint::class.java)
-            .getUserGetListPresenter()
+        serviceProvider.getService(UserGetListPresenter::class.java)
     }
 
     // Holds our view state which the UI collects via [state]

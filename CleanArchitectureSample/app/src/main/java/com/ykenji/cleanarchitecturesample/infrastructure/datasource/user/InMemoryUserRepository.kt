@@ -1,6 +1,7 @@
 package com.ykenji.cleanarchitecturesample.infrastructure.datasource.user
 
 import android.content.Context
+import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.domain.adapter.log.Log
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
 import com.ykenji.cleanarchitecturesample.domain.model.user.User
@@ -19,12 +20,16 @@ class InMemoryUserRepository @Inject constructor(
     @InstallIn(SingletonComponent::class)
     @EntryPoint
     interface InMemoryUserRepositoryEntryPoint {
-        fun getLog(): Log
+        fun getServiceProvider(): ServiceProvider
+    }
+
+    private val serviceProvider by lazy {
+        EntryPointAccessors.fromApplication(context, InMemoryUserRepositoryEntryPoint::class.java)
+            .getServiceProvider()
     }
 
     private val log by lazy {
-        EntryPointAccessors.fromApplication(context, InMemoryUserRepositoryEntryPoint::class.java)
-            .getLog()
+        serviceProvider.getService(Log::class.java)
     }
 
     private val users = ArrayList<User>()
