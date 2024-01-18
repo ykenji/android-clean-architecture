@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">CleanArchitectureSample</string>
+    <string name="user_role_member">member</string>
+    <string name="user_role_admin">admin</string>
+    <string name="user_name">User name</string>
 </resources>
