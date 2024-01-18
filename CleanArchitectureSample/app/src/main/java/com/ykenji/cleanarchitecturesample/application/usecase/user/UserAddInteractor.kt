@@ -1,6 +1,7 @@
 package com.ykenji.cleanarchitecturesample.application.usecase.user
 
 import android.content.Context
+import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddInputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddOutputData
@@ -24,18 +25,20 @@ class UserAddInteractor @Inject constructor(
     @InstallIn(SingletonComponent::class)
     @EntryPoint
     interface UserAddInteractorEntryPoint {
-        fun getUserRepository(): UserRepository
-        fun getUserAddPresenter(): UserAddPresenter
+        fun getServiceProvider(): ServiceProvider
+    }
+
+    private val serviceProvider by lazy {
+        EntryPointAccessors.fromApplication(context, UserAddInteractorEntryPoint::class.java)
+            .getServiceProvider()
     }
 
     private val userRepository by lazy {
-        EntryPointAccessors.fromApplication(context, UserAddInteractorEntryPoint::class.java)
-            .getUserRepository()
+        serviceProvider.getService(UserRepository::class.java)
     }
 
     private val userAddPresenter by lazy {
-        EntryPointAccessors.fromApplication(context, UserAddInteractorEntryPoint::class.java)
-            .getUserAddPresenter()
+        serviceProvider.getService(UserAddPresenter::class.java)
     }
 
     override fun handle(inputData: UserAddInputData): UserAddOutputData {

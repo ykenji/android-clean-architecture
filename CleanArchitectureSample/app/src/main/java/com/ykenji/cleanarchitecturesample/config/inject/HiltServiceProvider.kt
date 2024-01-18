@@ -3,7 +3,10 @@ package com.ykenji.cleanarchitecturesample.config.inject
 import android.content.Context
 import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.domain.adapter.log.Log
+import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
+import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddUseCase
+import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListUseCase
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -19,31 +22,35 @@ class HiltServiceProvider @Inject constructor(
     @InstallIn(SingletonComponent::class)
     @EntryPoint
     interface HiltServiceProviderEntryPoint {
-        fun getLog(): Log
+        // use case
         fun getUserAddUseCase(): UserAddUseCase
         fun getUserGetListUseCase(): UserGetListUseCase
-    }
 
-    private val log by lazy {
-        EntryPointAccessors.fromApplication(context, HiltServiceProviderEntryPoint::class.java)
-            .getLog()
-    }
+        // presenter
+        fun getUserAddPresenter(): UserAddPresenter
+        fun getUserGetListPresenter(): UserGetListPresenter
 
-    private val userAddUseCase by lazy {
-        EntryPointAccessors.fromApplication(context, HiltServiceProviderEntryPoint::class.java)
-            .getUserAddUseCase()
-    }
-
-    private val userGetListUseCase by lazy {
-        EntryPointAccessors.fromApplication(context, HiltServiceProviderEntryPoint::class.java)
-            .getUserGetListUseCase()
+        // infrastructure
+        fun getLog(): Log
+        fun getUserRepository(): UserRepository
     }
 
     override fun <T> getService(clazz: Class<T>?): T {
-        return when (clazz) {
-            UserAddUseCase::class.java -> userAddUseCase
-            UserGetListUseCase::class.java -> userGetListUseCase
-            else -> throw IllegalArgumentException("Wrong class")
-        } as T
+        return EntryPointAccessors
+            .fromApplication(context, HiltServiceProviderEntryPoint::class.java)
+            .run {
+                when (clazz) {
+                    // use case
+                    UserAddUseCase::class.java -> getUserAddUseCase()
+                    UserGetListUseCase::class.java -> getUserGetListUseCase()
+                    // presenter
+                    UserAddPresenter::class.java -> getUserAddPresenter()
+                    UserGetListPresenter::class.java -> getUserGetListPresenter()
+                    // infrastructure
+                    Log::class.java -> getLog()
+                    UserRepository::class.java -> getUserRepository()
+                    else -> throw IllegalArgumentException("Wrong class")
+                } as T
+            }
     }
 }

@@ -6,7 +6,6 @@ import com.ykenji.cleanarchitecturesample.clarch.invoke.UseCaseInvokerFactory
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.core.InputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.core.OutputData
 
-
 class UseCaseBus {
     private val handlerTypes: HashMap<Class<*>, Class<*>?> = HashMap()
     private val invokers: HashMap<Class<*>, UseCaseInvoker?> = HashMap()

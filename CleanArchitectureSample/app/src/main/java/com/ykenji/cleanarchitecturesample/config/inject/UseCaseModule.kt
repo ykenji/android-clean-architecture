@@ -21,4 +21,3 @@ abstract class UseCaseModule {
     @Binds
     abstract fun bindUserGetListUseCase(impl: UserGetListInteractor): UserGetListUseCase
 }
-
