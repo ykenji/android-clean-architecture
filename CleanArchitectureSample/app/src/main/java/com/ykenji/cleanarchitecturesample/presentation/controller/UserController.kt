@@ -15,15 +15,15 @@ class UserController @Inject constructor(
     @Inject
     lateinit var bus: UseCaseBus
 
-    fun createUser(name: String, roleId: String) {
+    suspend fun createUser(name: String, roleId: String) {
         val role: UserRole = convertRole(roleId)
         val inputData = UserAddInputData(name, role)
-        bus.handle(inputData)
+        bus.suspendHandle(inputData)
     }
 
-    fun getUsers() {
+    suspend fun getUsers() {
         val inputData = UserGetListInputData()
-        bus.handle(inputData)
+        bus.suspendHandle(inputData)
     }
 
     private fun convertRole(roleId: String): UserRole {

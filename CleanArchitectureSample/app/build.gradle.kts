@@ -91,6 +91,9 @@ dependencies {
 
     // Timber
     implementation("com.jakewharton.timber:timber:4.7.1")
+
+    // Reflection
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.21")
 }
 
 kapt {

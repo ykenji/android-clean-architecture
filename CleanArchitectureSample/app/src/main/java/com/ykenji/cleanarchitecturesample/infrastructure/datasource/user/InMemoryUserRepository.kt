@@ -11,11 +11,17 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 class InMemoryUserRepository @Inject constructor(
     @ApplicationContext context: Context,
 ) : UserRepository {
+
+    private val _users = MutableStateFlow<Array<User>>(emptyArray())
+    override val users: Flow<Array<User>>
+        get() = _users
 
     @InstallIn(SingletonComponent::class)
     @EntryPoint
@@ -32,29 +38,31 @@ class InMemoryUserRepository @Inject constructor(
         serviceProvider.getService(Log::class.java)
     }
 
-    private val users = ArrayList<User>()
+    private val userList = ArrayList<User>()
 
     override fun add(user: User) {
         log.d("add")
         print(user)
-        users.add(user)
+        userList.add(user)
+        _users.value = userList.toTypedArray()
     }
 
     override fun remove(user: User) {
         log.d("remove")
         print(user)
-        users.remove(user)
+        userList.remove(user)
+        _users.value = userList.toTypedArray()
     }
 
     override fun findAll(): List<User> {
         log.d("findAll")
-        users.forEach { print(it) }
-        return users
+        userList.forEach { print(it) }
+        return userList
     }
 
     override fun find(id: UserId): User? {
         log.d("find")
-        val user = users.find { it.id == id }
+        val user = userList.find { it.id == id }
         user?.let { print(it) }
         return user
     }
