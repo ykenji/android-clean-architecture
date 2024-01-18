@@ -15,8 +15,13 @@ class UseCaseBus {
     private lateinit var provider: ServiceProvider
 
     fun <TInputData : InputData<TOutputData>, TOutputData : OutputData>
-            handle(inputData: TInputData): TOutputData? {
-        return getInvoker(inputData)?.invoke(inputData)
+            handle(inputData: TInputData) {
+        getInvoker(inputData)?.invoke(inputData)
+    }
+
+    suspend fun <TInputData : InputData<TOutputData>, TOutputData : OutputData>
+            suspendHandle(inputData: TInputData) {
+        getInvoker(inputData)?.suspendInvoke(inputData)
     }
 
     fun setup(provider: ServiceProvider, invokerFactory: UseCaseInvokerFactory) {

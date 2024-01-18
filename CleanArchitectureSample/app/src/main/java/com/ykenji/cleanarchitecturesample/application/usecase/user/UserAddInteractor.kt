@@ -15,6 +15,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.coroutineScope
 import java.util.UUID
 import javax.inject.Inject
 
@@ -52,5 +53,19 @@ class UserAddInteractor @Inject constructor(
         val outputData = UserAddOutputData(uuid)
         userAddPresenter.output(outputData)
         return outputData
+    }
+
+    override suspend fun suspendHandle(inputData: UserAddInputData) {
+        coroutineScope {
+            val uuid = UUID.randomUUID().toString()
+            val user = User(
+                UserId(uuid),
+                UserName(inputData.userName),
+                inputData.role
+            )
+            userRepository.add(user)
+            val outputData = UserAddOutputData(uuid)
+            userAddPresenter.output(outputData)
+        }
     }
 }

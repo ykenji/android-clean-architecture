@@ -121,13 +121,17 @@ class UserViewModel @Inject constructor(
     }
 
     fun addUser() {
-        log.d("addUser")
-        userController.createUser(userName.value, userRole.value)
+        viewModelScope.launch {
+            log.d("addUser")
+            userController.createUser(userName.value, userRole.value)
+        }
     }
 
     fun getUserList() {
-        log.d("getUserList")
-        userController.getUsers()
+        viewModelScope.launch {
+            log.d("getUserList")
+            userController.getUsers()
+        }
     }
 }
 

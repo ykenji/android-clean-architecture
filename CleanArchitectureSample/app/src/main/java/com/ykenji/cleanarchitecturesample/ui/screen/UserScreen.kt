@@ -30,6 +30,8 @@ fun UsersScreen(viewModel: UserViewModel = viewModel()) {
     val userList by viewModel.userList.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
+        viewModel.getUserList()
+
         viewModel.addedUserId.collect { id ->
             Toast.makeText(context, "user $id was added", Toast.LENGTH_LONG).show()
         }
@@ -43,7 +45,6 @@ fun UsersScreen(viewModel: UserViewModel = viewModel()) {
         onUserNameChanged = viewModel::setUserName,
         onClickAddButton = viewModel::addUser,
         onClickRemoveButton = {},
-        onClickGetUserListButton = viewModel::getUserList,
     )
 }
 
@@ -56,7 +57,6 @@ private fun UsersScreenContent(
     onUserNameChanged: (String) -> Unit,
     onClickAddButton: () -> Unit,
     onClickRemoveButton: () -> Unit,
-    onClickGetUserListButton: () -> Unit,
 ) {
     Column {
         val options = listOf(
@@ -89,12 +89,6 @@ private fun UsersScreenContent(
             Text("Add user")
         }
 
-        Button(
-            onClick = onClickGetUserListButton,
-        ) {
-            Text("Get user list")
-        }
-
         LazyColumn {
             items(userList) { user ->
                 Text(user.name)
@@ -115,7 +109,6 @@ private fun PreviewUserView() {
         onUserNameChanged = {},
         onClickAddButton = {},
         onClickRemoveButton = {},
-        onClickGetUserListButton = {},
     )
 }
 
