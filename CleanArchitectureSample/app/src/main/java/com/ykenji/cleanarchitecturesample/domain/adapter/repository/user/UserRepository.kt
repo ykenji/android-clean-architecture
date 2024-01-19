@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
-    val users: Flow<Array<User>>
+    val users: Flow<List<User>>
 
     fun add(user: User)
     fun remove(user: User)
