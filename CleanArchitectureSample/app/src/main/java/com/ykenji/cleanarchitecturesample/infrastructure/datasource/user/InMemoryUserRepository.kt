@@ -43,15 +43,15 @@ class InMemoryUserRepository @Inject constructor(
 
     override suspend fun add(user: User) {
         log.d("add")
-        print(user)
         userList.add(user)
         _users.value = userList.toList()
     }
 
     override suspend fun remove(user: User) {
         log.d("remove")
-        print(user)
-        userList.remove(user)
+        userList.removeIf {
+            it.id.value == user.id.value
+        }
         _users.value = userList.toList()
     }
 
@@ -62,10 +62,6 @@ class InMemoryUserRepository @Inject constructor(
 
     override fun find(id: UserId) = flow {
         log.d("find")
-        emit(userList.find { it.id == id })
-    }
-
-    private fun print(user: User) {
-        log.d("${user.id.value}/${user.role}/${user.name.value}")
+        emit(userList.find { it.id.value == id.value })
     }
 }
