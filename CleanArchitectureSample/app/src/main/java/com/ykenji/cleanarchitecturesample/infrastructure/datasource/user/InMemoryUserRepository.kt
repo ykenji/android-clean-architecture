@@ -19,8 +19,8 @@ class InMemoryUserRepository @Inject constructor(
     @ApplicationContext context: Context,
 ) : UserRepository {
 
-    private val _users = MutableStateFlow<Array<User>>(emptyArray())
-    override val users: Flow<Array<User>>
+    private val _users = MutableStateFlow<List<User>>(emptyList())
+    override val users: Flow<List<User>>
         get() = _users
 
     @InstallIn(SingletonComponent::class)
@@ -44,14 +44,14 @@ class InMemoryUserRepository @Inject constructor(
         log.d("add")
         print(user)
         userList.add(user)
-        _users.value = userList.toTypedArray()
+        _users.value = userList.toList()
     }
 
     override fun remove(user: User) {
         log.d("remove")
         print(user)
         userList.remove(user)
-        _users.value = userList.toTypedArray()
+        _users.value = userList.toList()
     }
 
     override fun findAll(): List<User> {

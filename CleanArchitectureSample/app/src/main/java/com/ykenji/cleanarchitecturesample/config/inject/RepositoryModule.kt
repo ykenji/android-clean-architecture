@@ -1,7 +1,7 @@
 package com.ykenji.cleanarchitecturesample.config.inject;
 
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
-import com.ykenji.cleanarchitecturesample.infrastructure.datasource.user.InMemoryUserRepository
+import com.ykenji.cleanarchitecturesample.infrastructure.datasource.user.DataStoreUserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,5 +13,5 @@ import javax.inject.Singleton
 abstract class RepositoryModule {
     @Singleton
     @Binds
-    abstract fun bindUserRepository(impl: InMemoryUserRepository): UserRepository
+    abstract fun bindUserRepository(impl: DataStoreUserRepository): UserRepository
 }
