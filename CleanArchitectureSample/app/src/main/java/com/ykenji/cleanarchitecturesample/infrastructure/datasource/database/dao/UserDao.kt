@@ -4,21 +4,21 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.ykenji.cleanarchitecturesample.infrastructure.datasource.database.model.User
+import com.ykenji.cleanarchitecturesample.infrastructure.datasource.database.model.DbUser
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
 
-    @Query("SELECT * FROM user")
-    fun getAll(): Flow<List<User>>
+    @Query("SELECT * FROM dbuser")
+    fun getAll(): Flow<List<DbUser>>
 
-    @Query("SELECT * FROM user WHERE id = :userId")
-    fun findById(userId: String): Flow<User?>
+    @Query("SELECT * FROM dbuser WHERE id = :userId")
+    fun findById(userId: String): Flow<DbUser?>
 
     @Insert
-    suspend fun insert(user: User)
+    suspend fun insert(user: DbUser)
 
     @Delete
-    suspend fun delete(user: User)
+    suspend fun delete(user: DbUser)
 }

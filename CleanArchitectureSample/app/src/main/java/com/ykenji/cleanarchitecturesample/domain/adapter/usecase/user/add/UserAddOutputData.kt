@@ -6,7 +6,7 @@ class UserAddOutputData : OutputData {
     var userId: String? = null
         private set
 
-    constructor(userId: String?) {
+    constructor(userId: String) {
         this.userId = userId
     }
 }
