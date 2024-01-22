@@ -9,7 +9,7 @@ import javax.inject.Inject
 class FlowUserAddPresenter @Inject constructor() :
     UserAddPresenter {
 
-    private val _userId: MutableStateFlow<String?> = MutableStateFlow("")
+    private val _userId: MutableStateFlow<String?> = MutableStateFlow(null)
     override val userId: Flow<String?>
         get() = _userId
 

@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserGetListPresenter {
 
-    val userList: Flow<List<UserData>>
+    val users: Flow<List<UserData>>
 
     fun output(outputData: UserGetListOutputData)
 }

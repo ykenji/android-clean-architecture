@@ -10,11 +10,11 @@ import javax.inject.Inject
 class FlowUserGetListPresenter @Inject constructor() :
     UserGetListPresenter {
 
-    private val _userList: MutableStateFlow<List<UserData>> = MutableStateFlow(emptyList())
-    override val userList: Flow<List<UserData>>
-        get() = _userList
+    private val _users: MutableStateFlow<List<UserData>> = MutableStateFlow(emptyList())
+    override val users: Flow<List<UserData>>
+        get() = _users
 
     override fun output(outputData: UserGetListOutputData) {
-        _userList.value = outputData.users
+        _users.value = outputData.users
     }
 }

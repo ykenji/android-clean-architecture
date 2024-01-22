@@ -8,11 +8,11 @@ import com.ykenji.cleanarchitecturesample.domain.model.user.UserId
 import com.ykenji.cleanarchitecturesample.domain.model.user.UserName
 import com.ykenji.cleanarchitecturesample.domain.model.user.UserRole
 import com.ykenji.cleanarchitecturesample.infrastructure.datasource.database.AppDatabase
+import com.ykenji.cleanarchitecturesample.infrastructure.datasource.database.model.DbUser
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-import com.ykenji.cleanarchitecturesample.infrastructure.datasource.database.model.User as DbUser
 
 class RoomUserRepository @Inject constructor(
     @ApplicationContext val context: Context,

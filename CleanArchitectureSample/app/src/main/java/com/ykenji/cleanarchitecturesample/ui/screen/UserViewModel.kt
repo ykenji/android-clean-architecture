@@ -102,7 +102,7 @@ class UserViewModel @Inject constructor(
 
         viewModelScope.launch {
             // Combine our flows and collect them into the view state StateFlow
-            userGetListPresenter.userList.catch { throwable ->
+            userGetListPresenter.users.catch { throwable ->
                 // TODO: emit a UI error here. For now we'll just rethrow
                 throw throwable
             }.collect {
