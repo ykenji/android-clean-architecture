@@ -11,6 +11,8 @@ import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAd
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddUseCase
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListInputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListUseCase
+import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemoveInputData
+import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemoveUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +29,7 @@ class UseCaseBusModule {
                     Class<out UseCase<out InputData<out OutputData>, out OutputData>>>() {
             init {
                 put(UserAddInputData::class.java, UserAddUseCase::class.java)
+                put(UserRemoveInputData::class.java, UserRemoveUseCase::class.java)
                 put(UserGetListInputData::class.java, UserGetListUseCase::class.java)
             }
         }

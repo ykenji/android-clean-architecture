@@ -8,6 +8,8 @@ import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAd
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddUseCase
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListUseCase
+import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemovePresenter
+import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemoveUseCase
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -24,10 +26,12 @@ class HiltServiceProvider @Inject constructor(
     interface HiltServiceProviderEntryPoint {
         // use case
         fun getUserAddUseCase(): UserAddUseCase
+        fun getUserRemoveUseCase(): UserRemoveUseCase
         fun getUserGetListUseCase(): UserGetListUseCase
 
         // presenter
         fun getUserAddPresenter(): UserAddPresenter
+        fun getUserRemovePresenter(): UserRemovePresenter
         fun getUserGetListPresenter(): UserGetListPresenter
 
         // infrastructure
@@ -42,9 +46,11 @@ class HiltServiceProvider @Inject constructor(
                 when (clazz) {
                     // use case
                     UserAddUseCase::class.java -> getUserAddUseCase()
+                    UserRemoveUseCase::class.java -> getUserRemoveUseCase()
                     UserGetListUseCase::class.java -> getUserGetListUseCase()
                     // presenter
                     UserAddPresenter::class.java -> getUserAddPresenter()
+                    UserRemovePresenter::class.java -> getUserRemovePresenter()
                     UserGetListPresenter::class.java -> getUserGetListPresenter()
                     // infrastructure
                     Log::class.java -> getLog()
