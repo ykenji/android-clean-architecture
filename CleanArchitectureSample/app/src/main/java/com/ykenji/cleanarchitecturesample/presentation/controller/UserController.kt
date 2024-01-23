@@ -4,6 +4,7 @@ import android.content.Context
 import com.ykenji.cleanarchitecturesample.clarch.UseCaseBus
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddInputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListInputData
+import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemoveInputData
 import com.ykenji.cleanarchitecturesample.domain.model.user.UserRole
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -19,6 +20,13 @@ class UserController @Inject constructor(
         val role: UserRole = convertRole(roleId)
         val inputData = UserAddInputData(name, role)
         bus.suspendHandle(inputData)
+    }
+
+    suspend fun removeUsers(userIds: List<String>) {
+        userIds.forEach {
+            val inputData = UserRemoveInputData(it)
+            bus.suspendHandle(inputData)
+        }
     }
 
     suspend fun getUsers() {
