@@ -15,6 +15,8 @@ import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -42,12 +44,14 @@ class UserGetListInteractor @Inject constructor(
     }
 
     override fun handle(inputData: UserGetListInputData): UserGetListOutputData {
-        val userData = userRepository.findAll().map { x: User ->
-            UserData(
-                x.id.value,
-                x.name.value,
-                x.role
-            )
+        val userData = runBlocking {
+            userRepository.findAll().first().map { x: User ->
+                UserData(
+                    x.id.value,
+                    x.name.value,
+                    x.role
+                )
+            }
         }
         val outputData = UserGetListOutputData(userData)
         userGetListPresenter.output(outputData)
@@ -56,7 +60,7 @@ class UserGetListInteractor @Inject constructor(
 
     override suspend fun suspendHandle(inputData: UserGetListInputData) {
         coroutineScope {
-            userRepository.users.collect {
+            userRepository.findAll().collect {
                 val userData = it.map { x: User ->
                     UserData(
                         x.id.value,
