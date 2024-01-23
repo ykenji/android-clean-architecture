@@ -39,23 +39,24 @@ class UserGetListInteractor @Inject constructor(
         serviceProvider.getService(UserRepository::class.java)
     }
 
-    private val userGetListPresenter by lazy {
+    private val userGetPresetnter by lazy {
         serviceProvider.getService(UserGetListPresenter::class.java)
     }
 
     override fun handle(inputData: UserGetListInputData): UserGetListOutputData {
-        val userData = runBlocking {
+        return runBlocking {
             userRepository.findAll().first().map { x: User ->
                 UserData(
                     x.id.value,
                     x.name.value,
                     x.role
                 )
+            }.let {
+                val outputData = UserGetListOutputData(it)
+                userGetPresetnter.output(outputData)
+                outputData
             }
         }
-        val outputData = UserGetListOutputData(userData)
-        userGetListPresenter.output(outputData)
-        return outputData
     }
 
     override suspend fun suspendHandle(inputData: UserGetListInputData) {
@@ -69,7 +70,7 @@ class UserGetListInteractor @Inject constructor(
                     )
                 }
                 val outputData = UserGetListOutputData(userData)
-                userGetListPresenter.output(outputData)
+                userGetPresetnter.output(outputData)
             }
         }
     }

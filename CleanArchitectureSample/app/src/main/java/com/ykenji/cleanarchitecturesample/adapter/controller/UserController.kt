@@ -1,4 +1,4 @@
-package com.ykenji.cleanarchitecturesample.presentation.controller
+package com.ykenji.cleanarchitecturesample.adapter.controller
 
 import android.content.Context
 import com.ykenji.cleanarchitecturesample.clarch.UseCaseBus

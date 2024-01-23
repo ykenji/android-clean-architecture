@@ -26,8 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ykenji.cleanarchitecturesample.R
-import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.common.UserData
-import com.ykenji.cleanarchitecturesample.domain.model.user.UserRole
+import com.ykenji.cleanarchitecturesample.adapter.viewmodel.UiUser
 import kotlinx.coroutines.launch
 
 @Composable
@@ -37,7 +36,7 @@ fun UsersScreen(viewModel: UserViewModel = viewModel()) {
 
     val viewState by viewModel.state.collectAsStateWithLifecycle()
 
-    val userList by viewModel.userList.collectAsStateWithLifecycle()
+    val users by viewModel.users.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.getUserList()
@@ -56,7 +55,7 @@ fun UsersScreen(viewModel: UserViewModel = viewModel()) {
     }
 
     UsersScreenContent(
-        userList = userList,
+        users = users,
         userRole = viewState.userRole,
         userName = viewState.userName,
         onUserRoleSelected = viewModel::setUserRole,
@@ -69,13 +68,13 @@ fun UsersScreen(viewModel: UserViewModel = viewModel()) {
 
 @Composable
 private fun UsersScreenContent(
-    userList: List<UserData>,
+    users: List<UiUser>,
     userRole: String,
     userName: String,
     onUserRoleSelected: (String) -> Unit,
     onUserNameChanged: (String) -> Unit,
     onClickAddButton: () -> Unit,
-    onUserSelected: (List<UserData>) -> Unit,
+    onUserSelected: (List<UiUser>) -> Unit,
     onClickRemoveButton: () -> Unit,
 ) {
     Column(
@@ -114,7 +113,7 @@ private fun UsersScreenContent(
         }
 
         UserList(
-            userList,
+            users,
             onUserSelected
         )
 
@@ -129,10 +128,10 @@ private fun UsersScreenContent(
 
 @Composable
 fun UserList(
-    userList: List<UserData>,
-    onUserSelected: (List<UserData>) -> Unit,
+    userList: List<UiUser>,
+    onUserSelected: (List<UiUser>) -> Unit,
 ) {
-    val selectedOptions = remember { mutableStateOf(listOf<UserData>()) }
+    val selectedOptions = remember { mutableStateOf(listOf<UiUser>()) }
 
     Column {
         userList.forEach { userData ->
@@ -154,7 +153,7 @@ fun UserList(
                 )
                 Text(userData.name)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(userData.role.name)
+                Text(userData.role)
             }
         }
     }
@@ -164,9 +163,9 @@ fun UserList(
 @Composable
 private fun PreviewUserView() {
     UsersScreenContent(
-        userList = listOf(
-            UserData("id1", "foo", UserRole.ADMIN),
-            UserData("id2", "bar", UserRole.MEMBER)
+        users = listOf(
+            UiUser("id1", "foo", "admin"),
+            UiUser("id2", "bar", "member"),
         ),
         userRole = "member",
         userName = "foo",

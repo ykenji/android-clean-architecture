@@ -1,6 +1,7 @@
 package com.ykenji.cleanarchitecturesample.application.usecase.user
 
 import android.content.Context
+import com.ykenji.cleanarchitecturesample.adapter.presenter.FlowUserAddPresenter
 import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddInputData
@@ -23,6 +24,9 @@ import javax.inject.Inject
 class UserAddInteractor @Inject constructor(
     @ApplicationContext val context: Context,
 ) : UserAddUseCase {
+
+    @Inject
+    lateinit var userPresenter: FlowUserAddPresenter
 
     @InstallIn(SingletonComponent::class)
     @EntryPoint
@@ -50,12 +54,12 @@ class UserAddInteractor @Inject constructor(
             UserName(inputData.userName),
             inputData.role
         )
-        runBlocking {
-            userRepository.add(user)
-        }
         val outputData = UserAddOutputData(uuid)
-        userAddPresenter.output(outputData)
-        return outputData
+        return runBlocking {
+            userRepository.add(user)
+            userAddPresenter.output(outputData)
+            outputData
+        }
     }
 
     override suspend fun suspendHandle(inputData: UserAddInputData) {
