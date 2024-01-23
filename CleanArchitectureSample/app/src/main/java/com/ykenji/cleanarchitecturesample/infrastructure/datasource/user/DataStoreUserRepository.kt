@@ -14,13 +14,8 @@ import com.ykenji.cleanarchitecturesample.infrastructure.datasource.user.DataSto
 import com.ykenji.cleanarchitecturesample.infrastructure.datasource.usersDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.io.IOException
 import javax.inject.Inject
 
@@ -33,74 +28,75 @@ class DataStoreUserRepository @Inject constructor(
         val KEY_USERS = stringSetPreferencesKey("users")
     }
 
-    override val users: Flow<List<User>>
-        get() = context.usersDataStore.data
-            .catch { e ->
-                // dataStore.data throws an IOException when an error is encountered when reading data
-                when (e) {
-                    is IOException -> {
-                        emit(emptyPreferences())
-                    }
-
-                    else -> throw e
-                }
-            }.map { pref ->
-                (pref[KEY_USERS] ?: emptySet()).map {
-                    stringToUser(it)
-                }.toList()
-            }
-
-    override fun add(user: User) {
-        launch(Dispatchers.IO) {
-            context.usersDataStore.edit { pref ->
-                (pref[KEY_USERS] ?: emptySet()).toMutableSet().let {
-                    it.add(userToString(user))
-                    pref[KEY_USERS] = it
-                }
+    override suspend fun add(user: User) {
+        context.usersDataStore.edit { pref ->
+            (pref[KEY_USERS] ?: emptySet()).toMutableSet().let {
+                it.add(userToString(user))
+                pref[KEY_USERS] = it
             }
         }
     }
 
-    override fun remove(user: User) {
-        launch(Dispatchers.IO) {
-            context.usersDataStore.edit { pref ->
-                val sources = pref[KEY_USERS]?.toMutableSet() ?: return@edit
-                sources.remove(userToString(user))
-                if (sources.isEmpty()) {
-                    pref.remove(KEY_USERS)
-                } else {
-                    pref[KEY_USERS] = sources
-                }
+    override suspend fun remove(user: User) {
+        context.usersDataStore.edit { pref ->
+            val sources = pref[KEY_USERS]?.toMutableSet() ?: return@edit
+            sources.removeIf {
+                stringToUser(it).id.value == user.id.value
+            }
+            if (sources.isEmpty()) {
+                pref.remove(KEY_USERS)
+            } else {
+                pref[KEY_USERS] = sources
             }
         }
     }
 
-    override fun findAll(): List<User> {
-        return runBlocking {
-            users.first()
-        }
-    }
-
-    override fun find(id: UserId): User? {
-        return runBlocking {
-            users.first().find { it.id.value == id.value }
-        }
-    }
-
-    private fun userToString(user: User): String {
-        return "${user.id.value}#${user.name.value}#${user.role}"
-    }
-
-    private fun stringToUser(string: String): User {
-        return string.split("#").let {
-            User(
-                UserId(it[0]),
-                UserName(it[1]),
-                when (it[2]) {
-                    UserRole.ADMIN.name -> UserRole.ADMIN
-                    else -> UserRole.MEMBER
+    override fun findAll() = context.usersDataStore.data
+        .catch { e ->
+            // dataStore.data throws an IOException when an error is encountered when reading data
+            when (e) {
+                is IOException -> {
+                    emit(emptyPreferences())
                 }
-            )
+
+                else -> throw e
+            }
+        }.map { pref ->
+            (pref[KEY_USERS] ?: emptySet()).map {
+                stringToUser(it)
+            }.toList()
         }
+
+    override fun find(id: UserId) = context.usersDataStore.data
+        .catch { e ->
+            // dataStore.data throws an IOException when an error is encountered when reading data
+            when (e) {
+                is IOException -> {
+                    emit(emptyPreferences())
+                }
+
+                else -> throw e
+            }
+        }.map { pref ->
+            pref[KEY_USERS]?.map {
+                stringToUser(it)
+            }?.find { it.id.value == id.value }
+        }
+}
+
+private fun userToString(user: User): String {
+    return "${user.id.value}#${user.name.value}#${user.role}"
+}
+
+private fun stringToUser(string: String): User {
+    return string.split("#").let {
+        User(
+            UserId(it[0]),
+            UserName(it[1]),
+            when (it[2]) {
+                UserRole.ADMIN.name -> UserRole.ADMIN
+                else -> UserRole.MEMBER
+            }
+        )
     }
 }

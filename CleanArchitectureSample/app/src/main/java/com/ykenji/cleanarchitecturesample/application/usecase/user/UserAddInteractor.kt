@@ -16,6 +16,7 @@ import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 import java.util.UUID
 import javax.inject.Inject
 
@@ -49,7 +50,9 @@ class UserAddInteractor @Inject constructor(
             UserName(inputData.userName),
             inputData.role
         )
-        userRepository.add(user)
+        runBlocking {
+            userRepository.add(user)
+        }
         val outputData = UserAddOutputData(uuid)
         userAddPresenter.output(outputData)
         return outputData

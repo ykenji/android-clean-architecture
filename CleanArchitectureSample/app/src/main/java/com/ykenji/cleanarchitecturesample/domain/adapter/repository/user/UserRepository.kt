@@ -5,11 +5,8 @@ import com.ykenji.cleanarchitecturesample.domain.model.user.UserId
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-
-    val users: Flow<List<User>>
-
-    fun add(user: User)
-    fun remove(user: User)
-    fun findAll(): List<User>
-    fun find(id: UserId): User?
+    suspend fun add(user: User)
+    suspend fun remove(user: User)
+    fun findAll(): Flow<List<User>>
+    fun find(id: UserId): Flow<User?>
 }
