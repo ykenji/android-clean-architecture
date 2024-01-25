@@ -1,11 +1,11 @@
-package com.ykenji.cleanarchitecturesample.infrastructure.datasource.user
+package com.ykenji.cleanarchitecturesample.infrastructure.datasource.arraylist.repository.user
 
 import android.content.Context
 import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.domain.adapter.log.Log
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
-import com.ykenji.cleanarchitecturesample.domain.model.user.User
-import com.ykenji.cleanarchitecturesample.domain.model.user.UserId
+import com.ykenji.cleanarchitecturesample.domain.model.entity.User
+import com.ykenji.cleanarchitecturesample.domain.model.value.UserId
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class InMemoryUserRepository @Inject constructor(
+class ArrayListUserRepository @Inject constructor(
     @ApplicationContext context: Context,
 ) : UserRepository {
 
@@ -28,12 +28,12 @@ class InMemoryUserRepository @Inject constructor(
 
     @InstallIn(SingletonComponent::class)
     @EntryPoint
-    interface InMemoryUserRepositoryEntryPoint {
+    interface ArrayListUserRepositoryEntryPoint {
         fun getServiceProvider(): ServiceProvider
     }
 
     private val serviceProvider by lazy {
-        EntryPointAccessors.fromApplication(context, InMemoryUserRepositoryEntryPoint::class.java)
+        EntryPointAccessors.fromApplication(context, ArrayListUserRepositoryEntryPoint::class.java)
             .getServiceProvider()
     }
 

@@ -1,14 +1,13 @@
 package com.ykenji.cleanarchitecturesample.application.usecase.user
 
 import android.content.Context
+import com.ykenji.cleanarchitecturesample.application.usecase.user.mapper.UserMapper
 import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
-import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.common.UserData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListInputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListOutputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListUseCase
-import com.ykenji.cleanarchitecturesample.domain.model.user.User
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -45,12 +44,8 @@ class UserGetListInteractor @Inject constructor(
 
     override fun handle(inputData: UserGetListInputData): UserGetListOutputData {
         return runBlocking {
-            userRepository.findAll().first().map { x: User ->
-                UserData(
-                    x.id.value,
-                    x.name.value,
-                    x.role
-                )
+            userRepository.findAll().first().map {
+                UserMapper.toUserData(it)
             }.let {
                 val outputData = UserGetListOutputData(it)
                 userGetPresetnter.output(outputData)
@@ -62,13 +57,7 @@ class UserGetListInteractor @Inject constructor(
     override suspend fun suspendHandle(inputData: UserGetListInputData) {
         coroutineScope {
             userRepository.findAll().collect {
-                val userData = it.map { x: User ->
-                    UserData(
-                        x.id.value,
-                        x.name.value,
-                        x.role
-                    )
-                }
+                val userData = it.map { UserMapper.toUserData(it) }
                 val outputData = UserGetListOutputData(userData)
                 userGetPresetnter.output(outputData)
             }

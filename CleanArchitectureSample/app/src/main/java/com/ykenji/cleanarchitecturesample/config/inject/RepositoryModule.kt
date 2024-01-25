@@ -1,7 +1,7 @@
 package com.ykenji.cleanarchitecturesample.config.inject;
 
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
-import com.ykenji.cleanarchitecturesample.infrastructure.datasource.user.RoomUserRepository
+import com.ykenji.cleanarchitecturesample.infrastructure.datasource.database.repository.user.RoomUserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

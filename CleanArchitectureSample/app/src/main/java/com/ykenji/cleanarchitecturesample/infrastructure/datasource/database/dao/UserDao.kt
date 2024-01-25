@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.ykenji.cleanarchitecturesample.infrastructure.datasource.database.model.DbUser
+import com.ykenji.cleanarchitecturesample.infrastructure.datasource.database.entity.DbUser
 import kotlinx.coroutines.flow.Flow
 
 @Dao

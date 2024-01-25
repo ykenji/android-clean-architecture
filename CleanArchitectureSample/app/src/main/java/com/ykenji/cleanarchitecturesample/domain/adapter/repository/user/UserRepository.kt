@@ -1,7 +1,7 @@
 package com.ykenji.cleanarchitecturesample.domain.adapter.repository.user
 
-import com.ykenji.cleanarchitecturesample.domain.model.user.User
-import com.ykenji.cleanarchitecturesample.domain.model.user.UserId
+import com.ykenji.cleanarchitecturesample.domain.model.entity.User
+import com.ykenji.cleanarchitecturesample.domain.model.value.UserId
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {

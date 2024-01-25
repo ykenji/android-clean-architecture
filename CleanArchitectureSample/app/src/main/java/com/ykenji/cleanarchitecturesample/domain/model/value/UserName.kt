@@ -1,4 +1,4 @@
-package com.ykenji.cleanarchitecturesample.domain.model.user
+package com.ykenji.cleanarchitecturesample.domain.model.value
 
 class UserName(value: String) {
     val value: String
