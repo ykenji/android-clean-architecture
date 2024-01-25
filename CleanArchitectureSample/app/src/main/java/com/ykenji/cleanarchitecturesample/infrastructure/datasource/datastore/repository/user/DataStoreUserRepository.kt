@@ -1,4 +1,4 @@
-package com.ykenji.cleanarchitecturesample.infrastructure.datasource.user
+package com.ykenji.cleanarchitecturesample.infrastructure.datasource.datastore.repository.user
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
@@ -6,12 +6,11 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.ykenji.cleanarchitecturesample.config.inject.ApplicationScope
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
-import com.ykenji.cleanarchitecturesample.domain.model.user.User
-import com.ykenji.cleanarchitecturesample.domain.model.user.UserId
-import com.ykenji.cleanarchitecturesample.domain.model.user.UserName
-import com.ykenji.cleanarchitecturesample.domain.model.user.UserRole
-import com.ykenji.cleanarchitecturesample.infrastructure.datasource.user.DataStoreUserRepository.PreferencesKeys.KEY_USERS
-import com.ykenji.cleanarchitecturesample.infrastructure.datasource.usersDataStore
+import com.ykenji.cleanarchitecturesample.domain.model.entity.User
+import com.ykenji.cleanarchitecturesample.domain.model.value.UserId
+import com.ykenji.cleanarchitecturesample.infrastructure.datasource.datastore.mapper.UserMapper
+import com.ykenji.cleanarchitecturesample.infrastructure.datasource.datastore.repository.user.DataStoreUserRepository.PreferencesKeys.KEY_USERS
+import com.ykenji.cleanarchitecturesample.infrastructure.datasource.datastore.usersDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.catch
@@ -31,7 +30,7 @@ class DataStoreUserRepository @Inject constructor(
     override suspend fun add(user: User) {
         context.usersDataStore.edit { pref ->
             (pref[KEY_USERS] ?: emptySet()).toMutableSet().let {
-                it.add(userToString(user))
+                it.add(UserMapper.toString(user))
                 pref[KEY_USERS] = it
             }
         }
@@ -41,7 +40,7 @@ class DataStoreUserRepository @Inject constructor(
         context.usersDataStore.edit { pref ->
             val sources = pref[KEY_USERS]?.toMutableSet() ?: return@edit
             sources.removeIf {
-                stringToUser(it).id.value == user.id.value
+                UserMapper.toUser(it).id.value == user.id.value
             }
             if (sources.isEmpty()) {
                 pref.remove(KEY_USERS)
@@ -63,7 +62,7 @@ class DataStoreUserRepository @Inject constructor(
             }
         }.map { pref ->
             (pref[KEY_USERS] ?: emptySet()).map {
-                stringToUser(it)
+                UserMapper.toUser(it)
             }.toList()
         }
 
@@ -79,24 +78,7 @@ class DataStoreUserRepository @Inject constructor(
             }
         }.map { pref ->
             pref[KEY_USERS]?.map {
-                stringToUser(it)
+                UserMapper.toUser(it)
             }?.find { it.id.value == id.value }
         }
-}
-
-private fun userToString(user: User): String {
-    return "${user.id.value}#${user.name.value}#${user.role}"
-}
-
-private fun stringToUser(string: String): User {
-    return string.split("#").let {
-        User(
-            UserId(it[0]),
-            UserName(it[1]),
-            when (it[2]) {
-                UserRole.ADMIN.name -> UserRole.ADMIN
-                else -> UserRole.MEMBER
-            }
-        )
-    }
 }

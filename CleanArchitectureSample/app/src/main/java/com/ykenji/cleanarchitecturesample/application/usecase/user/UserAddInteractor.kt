@@ -1,16 +1,14 @@
 package com.ykenji.cleanarchitecturesample.application.usecase.user
 
 import android.content.Context
-import com.ykenji.cleanarchitecturesample.adapter.presenter.FlowUserAddPresenter
+import com.ykenji.cleanarchitecturesample.application.usecase.user.mapper.UserMapper
 import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddInputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddOutputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddUseCase
-import com.ykenji.cleanarchitecturesample.domain.model.user.User
-import com.ykenji.cleanarchitecturesample.domain.model.user.UserId
-import com.ykenji.cleanarchitecturesample.domain.model.user.UserName
+import com.ykenji.cleanarchitecturesample.presenter.FlowUserAddPresenter
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -49,11 +47,7 @@ class UserAddInteractor @Inject constructor(
 
     override fun handle(inputData: UserAddInputData): UserAddOutputData {
         val uuid = UUID.randomUUID().toString()
-        val user = User(
-            UserId(uuid),
-            UserName(inputData.userName),
-            inputData.role
-        )
+        val user = UserMapper.toUser(uuid, inputData.userName, inputData.role)
         val outputData = UserAddOutputData(uuid)
         return runBlocking {
             userRepository.add(user)
@@ -65,11 +59,7 @@ class UserAddInteractor @Inject constructor(
     override suspend fun suspendHandle(inputData: UserAddInputData) {
         coroutineScope {
             val uuid = UUID.randomUUID().toString()
-            val user = User(
-                UserId(uuid),
-                UserName(inputData.userName),
-                inputData.role
-            )
+            val user = UserMapper.toUser(uuid, inputData.userName, inputData.role)
             userRepository.add(user)
             val outputData = UserAddOutputData(uuid)
             userAddPresenter.output(outputData)

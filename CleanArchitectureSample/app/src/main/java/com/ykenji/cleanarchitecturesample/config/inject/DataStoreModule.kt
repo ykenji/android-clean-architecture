@@ -3,7 +3,7 @@ package com.ykenji.cleanarchitecturesample.config.inject
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.ykenji.cleanarchitecturesample.infrastructure.datasource.usersDataStore
+import com.ykenji.cleanarchitecturesample.infrastructure.datasource.datastore.usersDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

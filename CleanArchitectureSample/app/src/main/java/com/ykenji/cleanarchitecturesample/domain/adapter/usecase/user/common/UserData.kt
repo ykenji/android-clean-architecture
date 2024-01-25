@@ -1,6 +1,6 @@
 package com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.common
 
-import com.ykenji.cleanarchitecturesample.domain.model.user.UserRole
+import com.ykenji.cleanarchitecturesample.domain.model.value.UserRole
 
 data class UserData(
     val id: String,

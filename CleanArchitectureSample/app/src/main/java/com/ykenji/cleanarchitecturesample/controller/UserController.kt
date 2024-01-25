@@ -1,11 +1,11 @@
-package com.ykenji.cleanarchitecturesample.adapter.controller
+package com.ykenji.cleanarchitecturesample.controller
 
 import android.content.Context
 import com.ykenji.cleanarchitecturesample.clarch.UseCaseBus
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddInputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListInputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemoveInputData
-import com.ykenji.cleanarchitecturesample.domain.model.user.UserRole
+import com.ykenji.cleanarchitecturesample.domain.model.value.UserRole
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 

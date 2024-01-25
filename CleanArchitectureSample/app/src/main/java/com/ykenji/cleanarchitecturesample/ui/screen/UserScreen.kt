@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ykenji.cleanarchitecturesample.R
-import com.ykenji.cleanarchitecturesample.adapter.viewmodel.UiUser
+import com.ykenji.cleanarchitecturesample.presenter.model.UiUser
 import kotlinx.coroutines.launch
 
 @Composable

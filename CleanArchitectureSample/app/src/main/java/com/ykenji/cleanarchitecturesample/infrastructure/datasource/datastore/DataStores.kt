@@ -1,4 +1,4 @@
-package com.ykenji.cleanarchitecturesample.infrastructure.datasource
+package com.ykenji.cleanarchitecturesample.infrastructure.datasource.datastore
 
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore

@@ -1,4 +1,4 @@
-package com.ykenji.cleanarchitecturesample.adapter.viewmodel
+package com.ykenji.cleanarchitecturesample.presenter.model
 
 data class UiUser(
     val id: String,

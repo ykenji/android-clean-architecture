@@ -1,4 +1,4 @@
-package com.ykenji.cleanarchitecturesample.infrastructure.datasource.database.model
+package com.ykenji.cleanarchitecturesample.infrastructure.datasource.database.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
