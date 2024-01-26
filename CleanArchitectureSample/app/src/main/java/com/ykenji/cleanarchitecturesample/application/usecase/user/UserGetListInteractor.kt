@@ -13,8 +13,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -38,7 +39,7 @@ class UserGetListInteractor @Inject constructor(
         serviceProvider.getService(UserRepository::class.java)
     }
 
-    private val userGetPresetnter by lazy {
+    private val userGetListPresetnter by lazy {
         serviceProvider.getService(UserGetListPresenter::class.java)
     }
 
@@ -48,19 +49,16 @@ class UserGetListInteractor @Inject constructor(
                 UserMapper.toUserData(it)
             }.let {
                 val outputData = UserGetListOutputData(it)
-                userGetPresetnter.output(outputData)
+                userGetListPresetnter.output(outputData)
                 outputData
             }
         }
     }
 
-    override suspend fun suspendHandle(inputData: UserGetListInputData) {
-        coroutineScope {
-            userRepository.findAll().collect {
-                val userData = it.map { UserMapper.toUserData(it) }
-                val outputData = UserGetListOutputData(userData)
-                userGetPresetnter.output(outputData)
-            }
+    override suspend fun suspendHandle(inputData: UserGetListInputData): Flow<UserGetListOutputData> =
+        userRepository.findAll().map {
+            val output = UserGetListOutputData(it.map { user -> UserMapper.toUserData(user) })
+            userGetListPresetnter.output(output)
+            output
         }
-    }
 }

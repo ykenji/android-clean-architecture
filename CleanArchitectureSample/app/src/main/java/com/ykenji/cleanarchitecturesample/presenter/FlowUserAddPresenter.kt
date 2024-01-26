@@ -13,8 +13,6 @@ class FlowUserAddPresenter @Inject constructor() : UserAddPresenter {
         get() = _userId
 
     override suspend fun output(outputData: UserAddOutputData) {
-        outputData.userId?.let {
-            _userId.emit(it)
-        }
+        outputData.userId?.let { _userId.emit(it) }
     }
 }

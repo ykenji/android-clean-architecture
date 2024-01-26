@@ -6,7 +6,11 @@ import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAd
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListInputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemoveInputData
 import com.ykenji.cleanarchitecturesample.domain.model.value.UserRole
+import com.ykenji.cleanarchitecturesample.presenter.mapper.UserMapper
+import com.ykenji.cleanarchitecturesample.presenter.model.UiUser
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 
@@ -29,9 +33,11 @@ class UserController @Inject constructor(
         }
     }
 
-    suspend fun getUsers() {
+    suspend fun getUsers(): Flow<List<UiUser>>? {
         val inputData = UserGetListInputData()
-        bus.suspendHandle(inputData)
+        return bus.suspendHandle(inputData)?.map { it ->
+            it.users.map { UserMapper.toUiUser(it) }
+        }
     }
 
     private fun convertRole(roleId: String): UserRole {

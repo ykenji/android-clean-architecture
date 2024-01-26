@@ -13,9 +13,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -47,7 +47,7 @@ class UserRemoveInteractor @Inject constructor(
         return runBlocking {
             val userId = UserMapper.toUserId(inputData.userId)
             var outputData = UserRemoveOutputData(null)
-            userRepository.find(userId).filterNotNull().collect {
+            userRepository.find(userId).firstOrNull()?.let {
                 userRepository.remove(it)
                 outputData = UserRemoveOutputData(it.id.value)
                 userRemovePresenter.output(outputData)
@@ -56,14 +56,18 @@ class UserRemoveInteractor @Inject constructor(
         }
     }
 
-    override suspend fun suspendHandle(inputData: UserRemoveInputData) {
-        coroutineScope {
-            val userId = UserMapper.toUserId(inputData.userId)
-            userRepository.find(userId).firstOrNull()?.let {
-                userRepository.remove(it)
-                val outputData = UserRemoveOutputData(it.id.value)
-                userRemovePresenter.output(outputData)
+    override suspend fun suspendHandle(inputData: UserRemoveInputData): Flow<UserRemoveOutputData> {
+        val userId = UserMapper.toUserId(inputData.userId)
+        userRepository.find(userId).firstOrNull()?.let {
+            userRepository.remove(it)
+            val outputData = UserRemoveOutputData(it.id.value)
+            userRemovePresenter.output(outputData)
+            return flow {
+                emit(outputData)
             }
+        }
+        return flow {
+            emit(UserRemoveOutputData(null))
         }
     }
 }
