@@ -1,15 +1,10 @@
 package com.ykenji.cleanarchitecturesample.repository.user
 
-import com.ykenji.cleanarchitecturesample.clarch.UseCaseBus
-import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
 import com.ykenji.cleanarchitecturesample.domain.model.entity.User
 import com.ykenji.cleanarchitecturesample.domain.model.value.UserId
 import com.ykenji.cleanarchitecturesample.domain.model.value.UserName
 import com.ykenji.cleanarchitecturesample.domain.model.value.UserRole
-import com.ykenji.cleanarchitecturesample.presenter.FlowUserAddPresenter
-import com.ykenji.cleanarchitecturesample.presenter.FlowUserGetListPresenter
-import com.ykenji.cleanarchitecturesample.presenter.FlowUserRemovePresenter
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert

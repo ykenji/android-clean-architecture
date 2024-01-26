@@ -13,9 +13,7 @@ import com.ykenji.cleanarchitecturesample.domain.model.entity.User
 import com.ykenji.cleanarchitecturesample.domain.model.value.UserId
 import com.ykenji.cleanarchitecturesample.domain.model.value.UserName
 import com.ykenji.cleanarchitecturesample.domain.model.value.UserRole
-import com.ykenji.cleanarchitecturesample.presenter.FlowUserAddPresenter
-import com.ykenji.cleanarchitecturesample.presenter.FlowUserGetListPresenter
-import com.ykenji.cleanarchitecturesample.presenter.FlowUserRemovePresenter
+import com.ykenji.cleanarchitecturesample.presenter.mapper.UserMapper
 import com.ykenji.cleanarchitecturesample.presenter.model.UiUser
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,19 +30,19 @@ object UserUseCaseTest {
 
     private lateinit var serviceProvider: ServiceProvider
     private lateinit var bus: UseCaseBus
-    private lateinit var userAddPresenter: FlowUserAddPresenter
-    private lateinit var userRemovePresenter: FlowUserRemovePresenter
-    private lateinit var userGetListPresenter: FlowUserGetListPresenter
+    private lateinit var userAddPresenter: UserAddPresenter
+    private lateinit var userRemovePresenter: UserRemovePresenter
+    private lateinit var userGetListPresenter: UserGetListPresenter
 
     fun init(serviceProvider: ServiceProvider, bus: UseCaseBus) {
         this.serviceProvider = serviceProvider
         this.bus = bus
         this.userAddPresenter = UserUseCaseTest.serviceProvider
-            .getService(UserAddPresenter::class.java) as FlowUserAddPresenter
+            .getService(UserAddPresenter::class.java)
         this.userRemovePresenter = UserUseCaseTest.serviceProvider
-            .getService(UserRemovePresenter::class.java) as FlowUserRemovePresenter
+            .getService(UserRemovePresenter::class.java)
         this.userGetListPresenter = UserUseCaseTest.serviceProvider
-            .getService(UserGetListPresenter::class.java) as FlowUserGetListPresenter
+            .getService(UserGetListPresenter::class.java)
     }
 
     fun exampleFlowTest() = runTest {
@@ -110,14 +108,14 @@ object UserUseCaseTest {
         // add
         var out1: String? = null
         backgroundScope.launch(UnconfinedTestDispatcher()) {
-            out1 = userAddPresenter.userId.first()
+            out1 = userAddPresenter.outputFlow.first().userId
         }
         bus.suspendHandle(UserAddInputData(user1.name.value, user1.role))
         Assert.assertNotNull(out1)
 
         var out2: String? = null
         backgroundScope.launch(UnconfinedTestDispatcher()) {
-            out2 = userAddPresenter.userId.first()
+            out2 = userAddPresenter.outputFlow.first().userId
         }
         bus.suspendHandle(UserAddInputData(user2.name.value, user2.role))
         Assert.assertNotNull(out2)
@@ -125,8 +123,8 @@ object UserUseCaseTest {
         // get list
         var out3: List<UiUser>? = null
         backgroundScope.launch(UnconfinedTestDispatcher()) {
-            userGetListPresenter.users.collect {
-                out3 = it
+            userGetListPresenter.outputFlow.collect {
+                out3 = it.users.map { UserMapper.toUiUser(it) }
             }
         }
         bus.suspendHandle(UserGetListInputData())?.first()
@@ -145,7 +143,7 @@ object UserUseCaseTest {
         val out4 = mutableListOf<String?>()
         out3?.forEach {
             backgroundScope.launch(UnconfinedTestDispatcher()) {
-                out4.add(userRemovePresenter.userId.first())
+                out4.add(userRemovePresenter.outputFlow.first().userId)
             }
             bus.suspendHandle(UserRemoveInputData(it.id))
         }
@@ -154,8 +152,8 @@ object UserUseCaseTest {
         // get list
         var out5: List<UiUser>? = null
         backgroundScope.launch(UnconfinedTestDispatcher()) {
-            userGetListPresenter.users.collect {
-                out5 = it
+            userGetListPresenter.outputFlow.collect {
+                out5 = it.users.map { UserMapper.toUiUser(it) }
             }
         }
         bus.suspendHandle(UserGetListInputData())?.first()
