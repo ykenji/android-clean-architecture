@@ -1,4 +1,4 @@
-package com.ykenji.cleanarchitecturesample.presenter
+package com.ykenji.cleanarchitecturesample.presenter.user
 
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListOutputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListPresenter

@@ -1,7 +1,7 @@
-package com.ykenji.cleanarchitecturesample.presenter.mapper
+package com.ykenji.cleanarchitecturesample.presenter.user.mapper
 
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.common.UserData
-import com.ykenji.cleanarchitecturesample.presenter.model.UiUser
+import com.ykenji.cleanarchitecturesample.presenter.user.model.UiUser
 
 object UserMapper {
 

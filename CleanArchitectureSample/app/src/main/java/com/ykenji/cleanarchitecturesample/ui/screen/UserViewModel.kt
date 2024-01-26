@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
-import com.ykenji.cleanarchitecturesample.controller.UserController
+import com.ykenji.cleanarchitecturesample.controller.user.UserController
 import com.ykenji.cleanarchitecturesample.domain.adapter.log.Log
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemovePresenter
-import com.ykenji.cleanarchitecturesample.presenter.mapper.UserMapper
-import com.ykenji.cleanarchitecturesample.presenter.model.UiUser
+import com.ykenji.cleanarchitecturesample.presenter.user.mapper.UserMapper
+import com.ykenji.cleanarchitecturesample.presenter.user.model.UiUser
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
