@@ -1,8 +1,5 @@
 package com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist
 
-import kotlinx.coroutines.flow.Flow
+import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.core.Presenter
 
-interface UserGetListPresenter {
-    val outputFlow: Flow<UserGetListOutputData>
-    suspend fun output(outputData: UserGetListOutputData)
-}
+interface UserGetListPresenter : Presenter<UserGetListOutputData>

@@ -12,7 +12,7 @@ class FlowUserAddPresenter @Inject constructor() : UserAddPresenter {
     override val outputFlow: Flow<UserAddOutputData>
         get() = _outputFlow
 
-    override suspend fun output(outputData: UserAddOutputData) {
+    override suspend fun suspendHandle(outputData: UserAddOutputData) {
         _outputFlow.emit(outputData)
     }
 }
