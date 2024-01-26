@@ -1,8 +1,5 @@
 package com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove
 
-import kotlinx.coroutines.flow.Flow
+import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.core.Presenter
 
-interface UserRemovePresenter {
-    val outputFlow: Flow<UserRemoveOutputData>
-    suspend fun output(outputData: UserRemoveOutputData)
-}
+interface UserRemovePresenter : Presenter<UserRemoveOutputData>
