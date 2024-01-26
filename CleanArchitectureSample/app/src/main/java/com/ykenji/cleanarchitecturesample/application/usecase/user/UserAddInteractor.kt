@@ -8,13 +8,13 @@ import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAd
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddOutputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddUseCase
-import com.ykenji.cleanarchitecturesample.presenter.FlowUserAddPresenter
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import java.util.UUID
 import javax.inject.Inject
@@ -22,9 +22,6 @@ import javax.inject.Inject
 class UserAddInteractor @Inject constructor(
     @ApplicationContext val context: Context,
 ) : UserAddUseCase {
-
-    @Inject
-    lateinit var userPresenter: FlowUserAddPresenter
 
     @InstallIn(SingletonComponent::class)
     @EntryPoint
@@ -56,13 +53,14 @@ class UserAddInteractor @Inject constructor(
         }
     }
 
-    override suspend fun suspendHandle(inputData: UserAddInputData) {
-        coroutineScope {
-            val uuid = UUID.randomUUID().toString()
-            val user = UserMapper.toUser(uuid, inputData.userName, inputData.role)
-            userRepository.add(user)
-            val outputData = UserAddOutputData(uuid)
-            userAddPresenter.output(outputData)
+    override suspend fun suspendHandle(inputData: UserAddInputData): Flow<UserAddOutputData> {
+        val uuid = UUID.randomUUID().toString()
+        val user = UserMapper.toUser(uuid, inputData.userName, inputData.role)
+        userRepository.add(user)
+        val outputData = UserAddOutputData(uuid)
+        userAddPresenter.output(outputData)
+        return flow {
+            emit(outputData)
         }
     }
 }

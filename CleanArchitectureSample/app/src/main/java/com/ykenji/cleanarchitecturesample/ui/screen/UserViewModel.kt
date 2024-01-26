@@ -127,10 +127,11 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun getUserList() {
+    fun observeUsers() {
         viewModelScope.launch {
-            log.d("getUserList")
-            userController.getUsers()
+            userController.getUsers()?.collect {
+                log.d("user list was updated")
+            }
         }
     }
 }

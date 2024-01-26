@@ -15,6 +15,6 @@ class FlowUserGetListPresenter @Inject constructor() : UserGetListPresenter {
         get() = _users
 
     override suspend fun output(outputData: UserGetListOutputData) {
-        _users.value = outputData.users.map { UserMapper.toUiUser(it) }
+        _users.emit(outputData.users.map { UserMapper.toUiUser(it) })
     }
 }

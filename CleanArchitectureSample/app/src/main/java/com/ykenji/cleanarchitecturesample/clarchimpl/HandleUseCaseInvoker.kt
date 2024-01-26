@@ -4,6 +4,7 @@ import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.clarch.invoke.UseCaseInvoker
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.core.InputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.core.OutputData
+import kotlinx.coroutines.flow.Flow
 import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KCallable
 import kotlin.reflect.full.callSuspend
@@ -24,12 +25,12 @@ class HandleUseCaseInvoker internal constructor(
 
     override fun <TOutputData : OutputData> invoke(inputData: InputData<TOutputData>): TOutputData {
         val interactor: Any = provider.getService(implementClazz)
-        return invoke<OutputData>(interactor, inputData) as TOutputData
+        return invoke(interactor, inputData)
     }
 
-    override suspend fun <TOutputData : OutputData> suspendInvoke(inputData: InputData<TOutputData>) {
+    override suspend fun <TOutputData : OutputData> suspendInvoke(inputData: InputData<TOutputData>): Flow<TOutputData> {
         val interactor: Any = provider.getService(implementClazz)
-        suspendInvoke<OutputData>(interactor, inputData)
+        return suspendInvoke(interactor, inputData)
     }
 
     private fun <TOutputData : OutputData> invoke(
@@ -49,9 +50,9 @@ class HandleUseCaseInvoker internal constructor(
     private suspend fun <TOutputData : OutputData> suspendInvoke(
         interactor: Any,
         inputData: InputData<out TOutputData>,
-    ) {
+    ): Flow<TOutputData> {
         try {
-            suspendHandleMethod.callSuspend(interactor, inputData)
+            return suspendHandleMethod.callSuspend(interactor, inputData) as Flow<TOutputData>
         } catch (e: IllegalAccessException) {
             throw RuntimeException(e)
         } catch (e: InvocationTargetException) {

@@ -39,7 +39,7 @@ fun UsersScreen(viewModel: UserViewModel = viewModel()) {
     val users by viewModel.users.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.getUserList()
+        viewModel.observeUsers()
 
         launch {
             viewModel.addedUserId.collect { id ->

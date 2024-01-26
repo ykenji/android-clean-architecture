@@ -5,6 +5,7 @@ import com.ykenji.cleanarchitecturesample.clarch.invoke.UseCaseInvoker
 import com.ykenji.cleanarchitecturesample.clarch.invoke.UseCaseInvokerFactory
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.core.InputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.core.OutputData
+import kotlinx.coroutines.flow.Flow
 
 class UseCaseBus {
     private val handlerTypes: HashMap<Class<*>, Class<*>?> = HashMap()
@@ -15,13 +16,13 @@ class UseCaseBus {
     private lateinit var provider: ServiceProvider
 
     fun <TInputData : InputData<TOutputData>, TOutputData : OutputData>
-            handle(inputData: TInputData) {
-        getInvoker(inputData)?.invoke(inputData)
+            handle(inputData: TInputData): TOutputData? {
+        return getInvoker(inputData)?.invoke(inputData)
     }
 
     suspend fun <TInputData : InputData<TOutputData>, TOutputData : OutputData>
-            suspendHandle(inputData: TInputData) {
-        getInvoker(inputData)?.suspendInvoke(inputData)
+            suspendHandle(inputData: TInputData): Flow<TOutputData>? {
+        return getInvoker(inputData)?.suspendInvoke(inputData)
     }
 
     fun setup(provider: ServiceProvider, invokerFactory: UseCaseInvokerFactory) {
