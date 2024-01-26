@@ -7,14 +7,11 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import javax.inject.Inject
 
 class FlowUserRemovePresenter @Inject constructor() : UserRemovePresenter {
-
-    private val _userId = MutableSharedFlow<String>()
-    val userId: Flow<String>
-        get() = _userId
+    private val _outputFlow = MutableSharedFlow<UserRemoveOutputData>()
+    override val outputFlow: Flow<UserRemoveOutputData>
+        get() = _outputFlow
 
     override suspend fun output(outputData: UserRemoveOutputData) {
-        outputData.userId?.let {
-            _userId.emit(it)
-        }
+        _outputFlow.emit(outputData)
     }
 }

@@ -9,9 +9,7 @@ import com.ykenji.cleanarchitecturesample.domain.adapter.log.Log
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemovePresenter
-import com.ykenji.cleanarchitecturesample.presenter.FlowUserAddPresenter
-import com.ykenji.cleanarchitecturesample.presenter.FlowUserGetListPresenter
-import com.ykenji.cleanarchitecturesample.presenter.FlowUserRemovePresenter
+import com.ykenji.cleanarchitecturesample.presenter.mapper.UserMapper
 import com.ykenji.cleanarchitecturesample.presenter.model.UiUser
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -20,9 +18,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,15 +51,15 @@ class UserViewModel @Inject constructor(
     }
 
     private val userAddPresenter by lazy {
-        serviceProvider.getService(UserAddPresenter::class.java) as FlowUserAddPresenter
+        serviceProvider.getService(UserAddPresenter::class.java)
     }
 
     private val userRemovePresenter by lazy {
-        serviceProvider.getService(UserRemovePresenter::class.java) as FlowUserRemovePresenter
+        serviceProvider.getService(UserRemovePresenter::class.java)
     }
 
     private val userGetListPresenter by lazy {
-        serviceProvider.getService(UserGetListPresenter::class.java) as FlowUserGetListPresenter
+        serviceProvider.getService(UserGetListPresenter::class.java)
     }
 
     // Holds our view state which the UI collects via [state]
@@ -74,11 +75,23 @@ class UserViewModel @Inject constructor(
         get() = _userName
     private val _userName = MutableStateFlow("")
 
-    val addedUserId = userAddPresenter.userId
+    val addedUserId = userAddPresenter.outputFlow.map {
+        it.userId
+    }
 
-    val removedUserId = userRemovePresenter.userId
+    val removedUserId = userRemovePresenter.outputFlow.map {
+        it.userId
+    }
 
-    val users = userGetListPresenter.users
+    val users: StateFlow<List<UiUser>> = userGetListPresenter.outputFlow.map {
+        it.users.map {
+            UserMapper.toUiUser(it)
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = emptyList()
+    )
 
     private val selectedUsers: StateFlow<List<UiUser>>
         get() = _selectedUsers
