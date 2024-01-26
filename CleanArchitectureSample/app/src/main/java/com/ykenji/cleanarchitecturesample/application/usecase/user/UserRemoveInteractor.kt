@@ -2,7 +2,6 @@ package com.ykenji.cleanarchitecturesample.application.usecase.user
 
 import android.content.Context
 import com.ykenji.cleanarchitecturesample.application.usecase.user.mapper.UserMapper
-import com.ykenji.cleanarchitecturesample.clarch.PresenterBus
 import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemoveInputData
@@ -24,9 +23,6 @@ import javax.inject.Inject
 class UserRemoveInteractor @Inject constructor(
     @ApplicationContext val context: Context,
 ) : UserRemoveUseCase {
-
-    @Inject
-    lateinit var pbus: PresenterBus
 
     @InstallIn(SingletonComponent::class)
     @EntryPoint
@@ -54,7 +50,7 @@ class UserRemoveInteractor @Inject constructor(
             userRepository.find(userId).firstOrNull()?.let {
                 userRepository.remove(it)
                 outputData = UserRemoveOutputData(it.id.value)
-                pbus.suspendHandle(outputData)
+                userRemovePresenter.output(outputData)
             }
             outputData
         }
@@ -65,7 +61,7 @@ class UserRemoveInteractor @Inject constructor(
         userRepository.find(userId).firstOrNull()?.let {
             userRepository.remove(it)
             val outputData = UserRemoveOutputData(it.id.value)
-            pbus.suspendHandle(outputData)
+            userRemovePresenter.output(outputData)
             return flow {
                 emit(outputData)
             }
