@@ -2,11 +2,11 @@ package com.ykenji.cleanarchitecturesample.application.usecase.user
 
 import android.content.Context
 import com.ykenji.cleanarchitecturesample.application.usecase.user.mapper.UserMapper
-import com.ykenji.cleanarchitecturesample.clarch.PresenterBus
 import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListInputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListOutputData
+import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListUseCase
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -24,9 +24,6 @@ class UserGetListInteractor @Inject constructor(
     @ApplicationContext val context: Context,
 ) : UserGetListUseCase {
 
-    @Inject
-    lateinit var pbus: PresenterBus
-
     @InstallIn(SingletonComponent::class)
     @EntryPoint
     interface UserGetListInteractorEntryPoint {
@@ -42,13 +39,17 @@ class UserGetListInteractor @Inject constructor(
         serviceProvider.getService(UserRepository::class.java)
     }
 
+    private val userGetListPresetnter by lazy {
+        serviceProvider.getService(UserGetListPresenter::class.java)
+    }
+
     override fun handle(inputData: UserGetListInputData): UserGetListOutputData {
         return runBlocking {
             userRepository.findAll().first().map {
                 UserMapper.toUserData(it)
             }.let {
                 val outputData = UserGetListOutputData(it)
-                pbus.suspendHandle(outputData)
+                userGetListPresetnter.output(outputData)
                 outputData
             }
         }
@@ -57,7 +58,7 @@ class UserGetListInteractor @Inject constructor(
     override suspend fun suspendHandle(inputData: UserGetListInputData): Flow<UserGetListOutputData> =
         userRepository.findAll().map {
             val output = UserGetListOutputData(it.map { user -> UserMapper.toUserData(user) })
-            pbus.suspendHandle(output)
+            userGetListPresetnter.output(output)
             output
         }
 }

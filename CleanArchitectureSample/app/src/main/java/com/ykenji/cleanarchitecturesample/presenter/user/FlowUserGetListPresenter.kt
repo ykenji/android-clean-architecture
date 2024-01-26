@@ -17,7 +17,7 @@ class FlowUserGetListPresenter @Inject constructor() : UserGetListPresenter {
     override val outputFlow: Flow<UserGetListOutputData>
         get() = _outputFlow
 
-    override suspend fun suspendHandle(outputData: UserGetListOutputData) {
+    override suspend fun output(outputData: UserGetListOutputData) {
         _outputFlow.emit(outputData)
     }
 }

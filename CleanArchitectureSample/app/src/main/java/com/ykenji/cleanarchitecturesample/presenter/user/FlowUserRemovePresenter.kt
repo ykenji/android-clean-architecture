@@ -11,7 +11,7 @@ class FlowUserRemovePresenter @Inject constructor() : UserRemovePresenter {
     override val outputFlow: Flow<UserRemoveOutputData>
         get() = _outputFlow
 
-    override suspend fun suspendHandle(outputData: UserRemoveOutputData) {
+    override suspend fun output(outputData: UserRemoveOutputData) {
         _outputFlow.emit(outputData)
     }
 }
