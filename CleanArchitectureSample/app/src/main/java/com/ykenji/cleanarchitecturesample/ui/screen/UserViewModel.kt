@@ -9,7 +9,6 @@ import com.ykenji.cleanarchitecturesample.domain.adapter.log.Log
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAddPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemovePresenter
-import com.ykenji.cleanarchitecturesample.presenter.user.mapper.UserMapper
 import com.ykenji.cleanarchitecturesample.presenter.user.model.VmUser
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -22,7 +21,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -75,19 +73,11 @@ class UserViewModel @Inject constructor(
         get() = _userName
     private val _userName = MutableStateFlow("")
 
-    val addedUserId = userAddPresenter.outputFlow.map {
-        it.userId
-    }
+    val addedUserId = userAddPresenter.outputFlow
 
-    val removedUserId = userRemovePresenter.outputFlow.map {
-        it.userId
-    }
+    val removedUserId = userRemovePresenter.outputFlow
 
-    val users: StateFlow<List<VmUser>> = userGetListPresenter.outputFlow.map {
-        it.users.map {
-            UserMapper.toVmUser(it)
-        }
-    }.stateIn(
+    val users: StateFlow<List<VmUser>> = userGetListPresenter.outputFlow.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = emptyList()

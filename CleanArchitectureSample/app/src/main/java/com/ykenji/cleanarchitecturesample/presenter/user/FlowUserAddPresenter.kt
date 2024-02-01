@@ -8,11 +8,11 @@ import javax.inject.Inject
 
 class FlowUserAddPresenter @Inject constructor() : UserAddPresenter {
 
-    private val _outputFlow = MutableSharedFlow<UserAddOutputData>()
-    override val outputFlow: Flow<UserAddOutputData>
+    private val _outputFlow = MutableSharedFlow<String?>()
+    override val outputFlow: Flow<String?>
         get() = _outputFlow
 
     override suspend fun output(outputData: UserAddOutputData) {
-        _outputFlow.emit(outputData)
+        _outputFlow.emit(outputData.userId)
     }
 }

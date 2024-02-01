@@ -108,14 +108,14 @@ object UserUseCaseTest {
         // add
         var out1: String? = null
         backgroundScope.launch(UnconfinedTestDispatcher()) {
-            out1 = userAddPresenter.outputFlow.first().userId
+            out1 = userAddPresenter.outputFlow.first()
         }
         bus.suspendHandle(UserAddInputData(user1.name.value, user1.role))
         Assert.assertNotNull(out1)
 
         var out2: String? = null
         backgroundScope.launch(UnconfinedTestDispatcher()) {
-            out2 = userAddPresenter.outputFlow.first().userId
+            out2 = userAddPresenter.outputFlow.first()
         }
         bus.suspendHandle(UserAddInputData(user2.name.value, user2.role))
         Assert.assertNotNull(out2)
@@ -124,7 +124,7 @@ object UserUseCaseTest {
         var out3: List<VmUser>? = null
         backgroundScope.launch(UnconfinedTestDispatcher()) {
             userGetListPresenter.outputFlow.collect {
-                out3 = it.users.map { UserMapper.toVmUser(it) }
+                out3 = it
             }
         }
         bus.suspendHandle(UserGetListInputData())?.first()
@@ -143,7 +143,7 @@ object UserUseCaseTest {
         val out4 = mutableListOf<String?>()
         out3?.forEach {
             backgroundScope.launch(UnconfinedTestDispatcher()) {
-                out4.add(userRemovePresenter.outputFlow.first().userId)
+                out4.add(userRemovePresenter.outputFlow.first())
             }
             bus.suspendHandle(UserRemoveInputData(it.id))
         }
@@ -153,7 +153,7 @@ object UserUseCaseTest {
         var out5: List<VmUser>? = null
         backgroundScope.launch(UnconfinedTestDispatcher()) {
             userGetListPresenter.outputFlow.collect {
-                out5 = it.users.map { UserMapper.toVmUser(it) }
+                out5 = it
             }
         }
         bus.suspendHandle(UserGetListInputData())?.first()
