@@ -10,7 +10,7 @@ import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.add.UserAd
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.UserGetListPresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemovePresenter
 import com.ykenji.cleanarchitecturesample.presenter.user.mapper.UserMapper
-import com.ykenji.cleanarchitecturesample.presenter.user.model.UiUser
+import com.ykenji.cleanarchitecturesample.presenter.user.model.VmUser
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -83,9 +83,9 @@ class UserViewModel @Inject constructor(
         it.userId
     }
 
-    val users: StateFlow<List<UiUser>> = userGetListPresenter.outputFlow.map {
+    val users: StateFlow<List<VmUser>> = userGetListPresenter.outputFlow.map {
         it.users.map {
-            UserMapper.toUiUser(it)
+            UserMapper.toVmUser(it)
         }
     }.stateIn(
         scope = viewModelScope,
@@ -93,9 +93,9 @@ class UserViewModel @Inject constructor(
         initialValue = emptyList()
     )
 
-    private val selectedUsers: StateFlow<List<UiUser>>
+    private val selectedUsers: StateFlow<List<VmUser>>
         get() = _selectedUsers
-    private val _selectedUsers: MutableStateFlow<List<UiUser>> = MutableStateFlow(emptyList())
+    private val _selectedUsers: MutableStateFlow<List<VmUser>> = MutableStateFlow(emptyList())
 
     init {
         viewModelScope.launch {
@@ -122,7 +122,7 @@ class UserViewModel @Inject constructor(
         _userName.value = userName
     }
 
-    fun setSelectedUsers(users: List<UiUser>) {
+    fun setSelectedUsers(users: List<VmUser>) {
         _selectedUsers.value = users
     }
 

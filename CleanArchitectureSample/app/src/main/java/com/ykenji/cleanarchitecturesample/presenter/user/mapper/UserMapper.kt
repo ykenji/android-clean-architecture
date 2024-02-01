@@ -1,9 +1,9 @@
 package com.ykenji.cleanarchitecturesample.presenter.user.mapper
 
-import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.common.UserData
-import com.ykenji.cleanarchitecturesample.presenter.user.model.UiUser
+import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.common.UcUser
+import com.ykenji.cleanarchitecturesample.presenter.user.model.VmUser
 
 object UserMapper {
 
-    fun toUiUser(userData: UserData) = UiUser(userData.id, userData.name, userData.role.name)
+    fun toVmUser(ucUser: UcUser) = VmUser(ucUser.id, ucUser.name, ucUser.role.name)
 }

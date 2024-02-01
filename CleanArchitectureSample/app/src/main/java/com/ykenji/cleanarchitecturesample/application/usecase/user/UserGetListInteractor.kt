@@ -46,7 +46,7 @@ class UserGetListInteractor @Inject constructor(
     override fun handle(inputData: UserGetListInputData): UserGetListOutputData {
         return runBlocking {
             userRepository.findAll().first().map {
-                UserMapper.toUserData(it)
+                UserMapper.toUcUser(it)
             }.let {
                 val outputData = UserGetListOutputData(it)
                 userGetListPresetnter.output(outputData)
@@ -57,7 +57,7 @@ class UserGetListInteractor @Inject constructor(
 
     override suspend fun suspendHandle(inputData: UserGetListInputData): Flow<UserGetListOutputData> =
         userRepository.findAll().map {
-            val output = UserGetListOutputData(it.map { user -> UserMapper.toUserData(user) })
+            val output = UserGetListOutputData(it.map { user -> UserMapper.toUcUser(user) })
             userGetListPresetnter.output(output)
             output
         }

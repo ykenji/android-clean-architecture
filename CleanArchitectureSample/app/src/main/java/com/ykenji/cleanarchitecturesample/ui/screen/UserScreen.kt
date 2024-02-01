@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ykenji.cleanarchitecturesample.R
-import com.ykenji.cleanarchitecturesample.presenter.user.model.UiUser
+import com.ykenji.cleanarchitecturesample.presenter.user.model.VmUser
 import kotlinx.coroutines.launch
 
 @Composable
@@ -68,13 +68,13 @@ fun UsersScreen(viewModel: UserViewModel = viewModel()) {
 
 @Composable
 private fun UsersScreenContent(
-    users: List<UiUser>,
+    users: List<VmUser>,
     userRole: String,
     userName: String,
     onUserRoleSelected: (String) -> Unit,
     onUserNameChanged: (String) -> Unit,
     onClickAddButton: () -> Unit,
-    onUserSelected: (List<UiUser>) -> Unit,
+    onUserSelected: (List<VmUser>) -> Unit,
     onClickRemoveButton: () -> Unit,
 ) {
     Column(
@@ -128,32 +128,32 @@ private fun UsersScreenContent(
 
 @Composable
 fun UserList(
-    userList: List<UiUser>,
-    onUserSelected: (List<UiUser>) -> Unit,
+    userList: List<VmUser>,
+    onUserSelected: (List<VmUser>) -> Unit,
 ) {
-    val selectedOptions = remember { mutableStateOf(listOf<UiUser>()) }
+    val selectedOptions = remember { mutableStateOf(listOf<VmUser>()) }
 
     Column {
-        userList.forEach { userData ->
+        userList.forEach { user ->
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
-                    checked = selectedOptions.value.contains(userData),
+                    checked = selectedOptions.value.contains(user),
                     onCheckedChange = { selected ->
                         val currentSelected = selectedOptions.value.toMutableList()
                         if (selected) {
-                            currentSelected.add(userData)
+                            currentSelected.add(user)
                         } else {
-                            currentSelected.remove(userData)
+                            currentSelected.remove(user)
                         }
                         selectedOptions.value = currentSelected
                         onUserSelected(currentSelected)
                     }
                 )
-                Text(userData.name)
+                Text(user.name)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(userData.role)
+                Text(user.role)
             }
         }
     }
@@ -164,8 +164,8 @@ fun UserList(
 private fun PreviewUserView() {
     UsersScreenContent(
         users = listOf(
-            UiUser("id1", "foo", "admin"),
-            UiUser("id2", "bar", "member"),
+            VmUser("id1", "foo", "admin"),
+            VmUser("id2", "bar", "member"),
         ),
         userRole = "member",
         userName = "foo",
