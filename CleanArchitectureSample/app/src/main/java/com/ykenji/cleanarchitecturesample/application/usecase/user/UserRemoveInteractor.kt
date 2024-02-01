@@ -1,13 +1,13 @@
 package com.ykenji.cleanarchitecturesample.application.usecase.user
 
 import android.content.Context
-import com.ykenji.cleanarchitecturesample.application.usecase.user.mapper.UserMapper
 import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
 import com.ykenji.cleanarchitecturesample.domain.adapter.repository.user.UserRepository
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemoveInputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemoveOutputData
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemovePresenter
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemoveUseCase
+import com.ykenji.cleanarchitecturesample.domain.model.value.UserId
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -45,7 +45,7 @@ class UserRemoveInteractor @Inject constructor(
 
     override fun handle(inputData: UserRemoveInputData): UserRemoveOutputData {
         return runBlocking {
-            val userId = UserMapper.toUserId(inputData.userId)
+            val userId = UserId(inputData.userId)
             var outputData = UserRemoveOutputData(null)
             userRepository.find(userId).firstOrNull()?.let {
                 userRepository.remove(it)
@@ -57,7 +57,7 @@ class UserRemoveInteractor @Inject constructor(
     }
 
     override suspend fun suspendHandle(inputData: UserRemoveInputData): Flow<UserRemoveOutputData> {
-        val userId = UserMapper.toUserId(inputData.userId)
+        val userId = UserId(inputData.userId)
         userRepository.find(userId).firstOrNull()?.let {
             userRepository.remove(it)
             val outputData = UserRemoveOutputData(it.id.value)

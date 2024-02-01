@@ -14,7 +14,7 @@ import com.ykenji.cleanarchitecturesample.domain.model.value.UserId
 import com.ykenji.cleanarchitecturesample.domain.model.value.UserName
 import com.ykenji.cleanarchitecturesample.domain.model.value.UserRole
 import com.ykenji.cleanarchitecturesample.presenter.user.mapper.UserMapper
-import com.ykenji.cleanarchitecturesample.presenter.user.model.UiUser
+import com.ykenji.cleanarchitecturesample.presenter.user.model.VmUser
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -121,10 +121,10 @@ object UserUseCaseTest {
         Assert.assertNotNull(out2)
 
         // get list
-        var out3: List<UiUser>? = null
+        var out3: List<VmUser>? = null
         backgroundScope.launch(UnconfinedTestDispatcher()) {
             userGetListPresenter.outputFlow.collect {
-                out3 = it.users.map { UserMapper.toUiUser(it) }
+                out3 = it.users.map { UserMapper.toVmUser(it) }
             }
         }
         bus.suspendHandle(UserGetListInputData())?.first()
@@ -150,10 +150,10 @@ object UserUseCaseTest {
         Assert.assertEquals(out3?.size, out4.size)
 
         // get list
-        var out5: List<UiUser>? = null
+        var out5: List<VmUser>? = null
         backgroundScope.launch(UnconfinedTestDispatcher()) {
             userGetListPresenter.outputFlow.collect {
-                out5 = it.users.map { UserMapper.toUiUser(it) }
+                out5 = it.users.map { UserMapper.toVmUser(it) }
             }
         }
         bus.suspendHandle(UserGetListInputData())?.first()

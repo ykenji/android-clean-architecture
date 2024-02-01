@@ -7,7 +7,7 @@ import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.getlist.Us
 import com.ykenji.cleanarchitecturesample.domain.adapter.usecase.user.remove.UserRemoveInputData
 import com.ykenji.cleanarchitecturesample.domain.model.value.UserRole
 import com.ykenji.cleanarchitecturesample.presenter.user.mapper.UserMapper
-import com.ykenji.cleanarchitecturesample.presenter.user.model.UiUser
+import com.ykenji.cleanarchitecturesample.presenter.user.model.VmUser
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -33,10 +33,10 @@ class UserController @Inject constructor(
         }
     }
 
-    suspend fun getUsers(): Flow<List<UiUser>>? {
+    suspend fun getUsers(): Flow<List<VmUser>>? {
         val inputData = UserGetListInputData()
         return bus.suspendHandle(inputData)?.map { it ->
-            it.users.map { UserMapper.toUiUser(it) }
+            it.users.map { UserMapper.toVmUser(it) }
         }
     }
 

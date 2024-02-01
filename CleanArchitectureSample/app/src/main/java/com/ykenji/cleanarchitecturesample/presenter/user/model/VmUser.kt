@@ -1,6 +1,6 @@
 package com.ykenji.cleanarchitecturesample.presenter.user.model
 
-data class UiUser(
+data class VmUser(
     val id: String,
     val name: String,
     val role: String,
