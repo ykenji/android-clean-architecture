@@ -13,7 +13,6 @@ import com.ykenji.cleanarchitecturesample.domain.model.entity.User
 import com.ykenji.cleanarchitecturesample.domain.model.value.UserId
 import com.ykenji.cleanarchitecturesample.domain.model.value.UserName
 import com.ykenji.cleanarchitecturesample.domain.model.value.UserRole
-import com.ykenji.cleanarchitecturesample.presenter.user.mapper.UserMapper
 import com.ykenji.cleanarchitecturesample.presenter.user.model.VmUser
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.MutableStateFlow

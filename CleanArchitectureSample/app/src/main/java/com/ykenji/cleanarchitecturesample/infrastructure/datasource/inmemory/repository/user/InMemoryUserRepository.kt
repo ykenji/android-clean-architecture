@@ -1,4 +1,4 @@
-package com.ykenji.cleanarchitecturesample.infrastructure.datasource.arraylist.repository.user
+package com.ykenji.cleanarchitecturesample.infrastructure.datasource.inmemory.repository.user
 
 import android.content.Context
 import com.ykenji.cleanarchitecturesample.clarch.inject.ServiceProvider
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class ArrayListUserRepository @Inject constructor(
+class InMemoryUserRepository @Inject constructor(
     @ApplicationContext context: Context,
 ) : UserRepository {
 
@@ -28,12 +28,12 @@ class ArrayListUserRepository @Inject constructor(
 
     @InstallIn(SingletonComponent::class)
     @EntryPoint
-    interface ArrayListUserRepositoryEntryPoint {
+    interface InMemoryUserRepositoryEntryPoint {
         fun getServiceProvider(): ServiceProvider
     }
 
     private val serviceProvider by lazy {
-        EntryPointAccessors.fromApplication(context, ArrayListUserRepositoryEntryPoint::class.java)
+        EntryPointAccessors.fromApplication(context, InMemoryUserRepositoryEntryPoint::class.java)
             .getServiceProvider()
     }
 
